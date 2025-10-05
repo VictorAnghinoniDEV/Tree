@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duck Studios - Gerenciamento de Projeto Roblox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.ico">
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Duck Studios</h1>
+                <p>Painel de Gerenciamento</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+                <div id="loginError" class="login-error"></div>
+                <button type="submit" class="btn-primary btn-login">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Painel Principal -->
+    <div id="mainPanel" class="container" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>Duck Studios</h1>
+                    <p class="subtitle">Gerenciamento de Projetos Roblox</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-ia-tree" onclick="openIATreeModal()" title="Configurar IA Tree">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                        IA Tree
+                    </button>
+                    <button class="btn-logout" onclick="handleLogout()">Sair</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item active" data-tab="logs">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Logs</span>
+                </li>
+                <li class="nav-item" data-tab="lucro">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    <span>Lucro</span>
+                </li>
+                <li class="nav-item" data-tab="visitas">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span>Visitas</span>
+                </li>
+                <li class="nav-item" data-tab="ativos">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <span>Ativos</span>
+                </li>
+                <li class="nav-item" data-tab="equipe">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                    <span>Equipe</span>
+                </li>
+                <li class="nav-item" data-tab="jogos">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                        <polyline points="17 2 12 7 7 2"></polyline>
+                    </svg>
+                    <span>Jogos</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="content">
+            <!-- Seção Logs -->
+            <section id="logs" class="tab-content active">
+                <div class="section-header">
+                    <h2>Logs de Desenvolvimento</h2>
+                    <button class="btn-primary" onclick="openAddLogModal()">Adicionar Log</button>
+                </div>
+                <div class="logs-container" id="logsContainer"></div>
+            </section>
+
+            <!-- Seção Lucro -->
+            <section id="lucro" class="tab-content">
+                <div class="section-header">
+                    <h2>Lucro em Robux</h2>
+                    <button class="btn-primary" onclick="openAddLucroModal()">Adicionar Entrada</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Acumulado</h3>
+                        <p class="stat-value" id="totalLucro">0</p>
+                        <span class="stat-label">Robux</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Média Mensal</h3>
+                        <p class="stat-value" id="mediaLucro">0</p>
+                        <span class="stat-label">Robux</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Último Registro</h3>
+                        <p class="stat-value" id="ultimoLucro">0</p>
+                        <span class="stat-label">Robux</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Valor</th>
+                                <th>Descrição</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lucroTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Seção Visitas -->
+            <section id="visitas" class="tab-content">
+                <div class="section-header">
+                    <h2>Visitas ao Jogo</h2>
+                    <button class="btn-primary" onclick="openAddVisitaModal()">Adicionar Registro</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total de Visitas</h3>
+                        <p class="stat-value" id="totalVisitas">0</p>
+                        <span class="stat-label">Visitantes</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Média Diária</h3>
+                        <p class="stat-value" id="mediaVisitas">0</p>
+                        <span class="stat-label">Visitantes</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Recorde</h3>
+                        <p class="stat-value" id="recordeVisitas">0</p>
+                        <span class="stat-label">Visitantes</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Quantidade</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitasTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Seção Ativos -->
+            <section id="ativos" class="tab-content">
+                <div class="section-header">
+                    <h2>Jogadores Ativos</h2>
+                    <button class="btn-primary" onclick="openAddAtivoModal()">Adicionar Registro</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Ativos Agora</h3>
+                        <p class="stat-value" id="ativosAgora">0</p>
+                        <span class="stat-label">Jogadores</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pico Hoje</h3>
+                        <p class="stat-value" id="picoAtivos">0</p>
+                        <span class="stat-label">Jogadores</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Média 24h</h3>
+                        <p class="stat-value" id="mediaAtivos">0</p>
+                        <span class="stat-label">Jogadores</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Quantidade</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ativosTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Seção Equipe -->
+            <section id="equipe" class="tab-content">
+                <div class="section-header">
+                    <h2>Membros da Equipe</h2>
+                    <button class="btn-primary" onclick="openAddMembroModal()">Adicionar Membro</button>
+                </div>
+                <div class="team-grid" id="teamGrid"></div>
+            </section>
+
+            <!-- Seção Jogos -->
+            <section id="jogos" class="tab-content">
+                <div class="section-header">
+                    <h2>Jogos do Studio</h2>
+                    <div>
+                        <button class="btn-primary" onclick="openAddGameFromPlaceModal()" style="margin-right: 10px;">Adicionar por PlaceId</button>
+                        <button class="btn-primary" onclick="openAddJogoModal()">Adicionar Manualmente</button>
+                    </div>
+                </div>
+                <div class="games-grid" id="gamesGrid"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal: Adicionar Log -->
+    <div id="modalLog" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Log de Desenvolvimento</h3>
+                <span class="close" onclick="closeModal('modalLog')">&times;</span>
+            </div>
+            <form id="formLog" onsubmit="addLog(event)">
+                <div class="form-group">
+                    <label for="logDev">Desenvolvedor</label>
+                    <input type="text" id="logDev" required>
+                </div>
+                <div class="form-group">
+                    <label for="logDescricao">Descrição</label>
+                    <textarea id="logDescricao" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="logData">Data</label>
+                    <input type="date" id="logData" required>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Lucro -->
+    <div id="modalLucro" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Entrada de Lucro</h3>
+                <span class="close" onclick="closeModal('modalLucro')">&times;</span>
+            </div>
+            <form id="formLucro" onsubmit="addLucro(event)">
+                <div class="form-group">
+                    <label for="lucroValor">Valor (Robux)</label>
+                    <input type="number" id="lucroValor" required>
+                </div>
+                <div class="form-group">
+                    <label for="lucroDescricao">Descrição</label>
+                    <input type="text" id="lucroDescricao" required>
+                </div>
+                <div class="form-group">
+                    <label for="lucroData">Data</label>
+                    <input type="date" id="lucroData" required>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Visita -->
+    <div id="modalVisita" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Registro de Visitas</h3>
+                <span class="close" onclick="closeModal('modalVisita')">&times;</span>
+            </div>
+            <form id="formVisita" onsubmit="addVisita(event)">
+                <div class="form-group">
+                    <label for="visitaQuantidade">Quantidade</label>
+                    <input type="number" id="visitaQuantidade" required>
+                </div>
+                <div class="form-group">
+                    <label for="visitaObs">Observações</label>
+                    <input type="text" id="visitaObs">
+                </div>
+                <div class="form-group">
+                    <label for="visitaData">Data</label>
+                    <input type="date" id="visitaData" required>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Ativo -->
+    <div id="modalAtivo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Registro de Ativos</h3>
+                <span class="close" onclick="closeModal('modalAtivo')">&times;</span>
+            </div>
+            <form id="formAtivo" onsubmit="addAtivo(event)">
+                <div class="form-group">
+                    <label for="ativoQuantidade">Quantidade</label>
+                    <input type="number" id="ativoQuantidade" required>
+                </div>
+                <div class="form-group">
+                    <label for="ativoStatus">Status</label>
+                    <select id="ativoStatus" required>
+                        <option value="Normal">Normal</option>
+                        <option value="Pico">Pico</option>
+                        <option value="Baixo">Baixo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ativoData">Data/Hora</label>
+                    <input type="datetime-local" id="ativoData" required>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Membro -->
+    <div id="modalMembro" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Membro da Equipe</h3>
+                <span class="close" onclick="closeModal('modalMembro')">&times;</span>
+            </div>
+            <form id="formMembro" onsubmit="addMembro(event)">
+                <div class="form-group">
+                    <label for="membroNome">Nome</label>
+                    <input type="text" id="membroNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="membroCargo">Cargo</label>
+                    <input type="text" id="membroCargo" required>
+                </div>
+                <div class="form-group">
+                    <label for="membroEmail">Email</label>
+                    <input type="email" id="membroEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="membroData">Data de Entrada</label>
+                    <input type="date" id="membroData" required>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Jogo -->
+    <div id="modalJogo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Jogo</h3>
+                <span class="close" onclick="closeModal('modalJogo')">&times;</span>
+            </div>
+            <form id="formJogo" onsubmit="addJogo(event)">
+                <div class="form-group">
+                    <label for="jogoNome">Nome do Jogo</label>
+                    <input type="text" id="jogoNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="jogoDescricao">Descrição</label>
+                    <textarea id="jogoDescricao" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="jogoStatus">Status</label>
+                    <select id="jogoStatus" required>
+                        <option value="Em Desenvolvimento">Em Desenvolvimento</option>
+                        <option value="Publicado">Publicado</option>
+                        <option value="Pausado">Pausado</option>
+                        <option value="Concluído">Concluído</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="jogoData">Data de Criação</label>
+                    <input type="date" id="jogoData" required>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Jogo por PlaceId -->
+    <div id="modalAddGameFromPlace" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Jogo pelo PlaceId</h3>
+                <span class="close" onclick="closeModal('modalAddGameFromPlace')">&times;</span>
+            </div>
+            <form id="formAddGameFromPlace" onsubmit="addGameFromPlaceId(event)">
+                <div class="form-group">
+                    <label for="gameFromPlaceId">PlaceId do Jogo</label>
+                    <input type="text" id="gameFromPlaceId" placeholder="Ex: 1234567890" required>
+                    <small>A IA Tree buscará automaticamente nome, descrição, thumbnail e criador do jogo.</small>
+                </div>
+                <button type="submit" class="btn-primary">Buscar e Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Configurar IA Tree -->
+    <div id="modalIATree" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configurar IA Tree</h3>
+                <span class="close" onclick="closeModal('modalIATree')">&times;</span>
+            </div>
+            <form id="formIATree" onsubmit="saveIATreeConfig(event)">
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="iaTreeEnabled">
+                        Ativar IA Tree (Atualização Automática)
+                    </label>
+                    <small>Quando ativada, a IA Tree buscará automaticamente dados do seu jogo no Roblox.</small>
+                </div>
+                <div class="form-group">
+                    <label for="iaTreePlaceId">PlaceId do Jogo Principal</label>
+                    <input type="text" id="iaTreePlaceId" placeholder="Ex: 1234567890">
+                    <small>ID do place que será monitorado automaticamente.</small>
+                </div>
+                <div class="form-group">
+                    <label for="iaTreeInterval">Intervalo de Atualização (minutos)</label>
+                    <input type="number" id="iaTreeInterval" min="1" max="60" value="5">
+                    <small>Frequência com que a IA Tree buscará novos dados (recomendado: 5-10 minutos).</small>
+                </div>
+                <div class="ia-tree-info">
+                    <h4>O que a IA Tree faz:</h4>
+                    <ul>
+                        <li>Atualiza automaticamente o número de visitas totais</li>
+                        <li>Registra jogadores ativos em tempo real</li>
+                        <li>Cria logs automáticos das atualizações</li>
+                        <li>Busca informações completas ao adicionar jogos por PlaceId</li>
+                    </ul>
+                </div>
+                <button type="submit" class="btn-primary">Salvar Configurações</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
